@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,9 +28,10 @@ public class FacilityController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<FacilityResponse> createFacility(@RequestBody @Valid FacilityRequest facilityRequest){
+    public ResponseEntity<FacilityResponse> createFacility(@RequestBody @Valid FacilityRequest facilityRequest,
+                                                           @RequestParam("file") MultipartFile[] files){
         log.info("Creating new facility : {}", facilityRequest.toString());
-        return ResponseEntity.ok(facilityService.createFacility(facilityRequest));
+        return ResponseEntity.ok(facilityService.createFacility(facilityRequest, files));
     }
 
     /**

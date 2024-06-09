@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ public class FacilityService {
      * @param facilityRequest
      * @return FacilityResponse
      */
-    public FacilityResponse createFacility(FacilityRequest facilityRequest) {
+    public FacilityResponse createFacility(FacilityRequest facilityRequest, MultipartFile[] files) {
         if (ObjectUtils.isEmpty(facilityRequest)) {
             throw new IllegalArgumentException("Illegal facility object passed");
         }
@@ -60,15 +61,8 @@ public class FacilityService {
         facilityRequest.comments().forEach(comment -> {
             facilityComments.add(commentService.createComment(Comment.builder().body(comment.getBody()).build()));
         });
-        List<File> facilityFiles = new ArrayList<>();
-        facilityRequest.uploadedFiles().forEach(file -> {
-            facilityFiles.add(fileService.saveFile(File.builder()
-                    .filePath(file.getFilePath())
-                    .docType(file.getDocType())
-                    .name(file.getName())
-                    .extension(file.getExtension())
-                    .build()));
-        });
+        //File upload service
+        fileService.fileUpload(files);
         Facility facility = Facility.builder()
                 .facilityType(facilityRequest.facilityType())
                 .facilityTerm(facilityRequest.facilityTerm())
@@ -83,7 +77,7 @@ public class FacilityService {
                 .mainBorrower(borrowerService.createBorrower(mainBorrower))
                 .comments(facilityComments)
                 .jointBorrower(jointBorrowers)
-                .uploadedFiles(facilityFiles)
+             //   .uploadedFiles(facilityFiles)
                 .build();
         //map request model to facility object, then persist.
         Facility createdFac = facilityRepository.save(facility);

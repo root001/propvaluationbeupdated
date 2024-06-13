@@ -20,4 +20,5 @@ public class File extends BaseEntity {
     @NonNull
     private String filePath;
     private String extension;
+    private Long size;
 }

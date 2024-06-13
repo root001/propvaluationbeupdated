@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mcb.abdulbasit.valuation.config.AppTestConfig;
 import com.mcb.abdulbasit.valuation.exception.ResponseExceptionHandler;
 import com.mcb.abdulbasit.valuation.model.Users;
+import com.mcb.abdulbasit.valuation.model.dto.UserResponse;
 import com.mcb.abdulbasit.valuation.service.UserService;
 import com.mcb.abdulbasit.valuation.util.EasyRandomUtils;
 import org.assertj.core.api.Assertions;

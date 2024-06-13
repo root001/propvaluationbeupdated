@@ -7,11 +7,12 @@ import com.mcb.abdulbasit.valuation.enums.ValuationType;
 import com.mcb.abdulbasit.valuation.model.Borrower;
 import com.mcb.abdulbasit.valuation.model.Comment;
 import com.mcb.abdulbasit.valuation.model.File;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record FacilityRequest(FacilityType facilityType, Catergory catergory, FacilityPurpose purpose,
-                              Integer facilityTerm, String ccy, Double amount, boolean isHousingLoan, boolean isFosRef,
-                              ValuationType valuationType, String fosReferenceNo, Borrower mainBorrower,
-                              List<Borrower> jointBorrower, List<File> uploadedFiles, List<Comment> comments) {
+public record FacilityRequest(@NotNull String facilityType, @NotNull Integer category, @NotNull int purpose,
+                              Integer facilityTerm, String ccy, Double amount, boolean housingLoan, boolean isFosRef,
+                              @NotNull String valuationType, String fosReferenceNo, int userid, BorrowerRequest mainBorrower,
+                              List<BorrowerRequest> jointBorrower, List<CommentRequest> comments) {
 }

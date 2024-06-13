@@ -12,12 +12,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Borrower extends BaseEntity {
-    @NonNull
     private String customerNumber;
-    @NonNull
     private String customerName;
     private String contactNumber;
-    @NonNull
     private String email;
     private String address;
 

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FacilityRepository extends JpaRepository<Facility, Integer> {
 
-    @Query(value = "SELECT fosReferenceNo FROM facility order by created_at desc limit 1", nativeQuery = true)
+    @Query(value = "SELECT facility.fos_reference_no FROM facility order by facility.created_at desc limit 1", nativeQuery = true)
     String findFosReferenceNo();
 }

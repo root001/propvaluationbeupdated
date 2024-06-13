@@ -3,6 +3,7 @@ package com.mcb.abdulbasit.valuation.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mcb.abdulbasit.valuation.constant.AppConstants;
 import com.mcb.abdulbasit.valuation.model.Users;
+import com.mcb.abdulbasit.valuation.model.dto.UserResponse;
 import com.mcb.abdulbasit.valuation.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,16 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Users> findUser(@PathVariable Integer id) {
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<UserResponse> findUser(@PathVariable Integer id) {
         if(id < 0)
             throw new IllegalArgumentException("Illegal id provided.");
-        return ResponseEntity.ok(userService.getUser(id) );
+        Users user = userService.getUser(id);
+        return ResponseEntity.ok(new UserResponse(user.getId(), user.getUsername(), user.getFullname(),
+                user.getRole().name(), user.getBusinessUnit(), user.getContactNumber()) );
     }
 
-    @PostMapping("/save")
+    @GetMapping("/save")
     public ResponseEntity<Users> create() throws Exception {
         return ResponseEntity.ok(userService.create() );
     }

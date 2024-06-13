@@ -3,6 +3,7 @@ package com.mcb.abdulbasit.valuation.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mcb.abdulbasit.valuation.enums.Role;
 import com.mcb.abdulbasit.valuation.model.Users;
+import com.mcb.abdulbasit.valuation.model.dto.UserResponse;
 import com.mcb.abdulbasit.valuation.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;

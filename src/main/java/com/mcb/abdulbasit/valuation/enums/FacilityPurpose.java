@@ -3,13 +3,23 @@ package com.mcb.abdulbasit.valuation.enums;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public enum FacilityPurpose {
-    Reparation(1),
-    Inheritance(2),
-    Construction(3);
+    REPARATION(1),
+    INHERITANCE(2),
+    CONSTRUCTION(3);
 
-    private Integer id;
+    private final int value;
 
+    FacilityPurpose(int value) {
+        this.value = value;
+    }
+
+    public static FacilityPurpose fromValue(int value) {
+        for (FacilityPurpose facilityPurpose : FacilityPurpose.values()) {
+            if (facilityPurpose.value == value) {
+                return facilityPurpose;
+            }
+        }
+        throw new IllegalArgumentException("Unknown value: " + value);
+    }
 }

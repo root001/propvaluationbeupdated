@@ -1,10 +1,10 @@
 package com.mcb.abdulbasit.valuation.service;
 
+import com.mcb.abdulbasit.valuation.enums.*;
 import com.mcb.abdulbasit.valuation.exception.EntityNotFoundException;
 import com.mcb.abdulbasit.valuation.model.Borrower;
 import com.mcb.abdulbasit.valuation.model.Comment;
 import com.mcb.abdulbasit.valuation.model.Facility;
-import com.mcb.abdulbasit.valuation.model.File;
 import com.mcb.abdulbasit.valuation.model.dto.FacilityRequest;
 import com.mcb.abdulbasit.valuation.model.dto.FacilityResponse;
 import com.mcb.abdulbasit.valuation.repository.FacilityRepository;
@@ -28,6 +28,7 @@ public class FacilityService {
     private final BorrowerService borrowerService;
     private final FileService fileService;
     private final CommentService commentService;
+    private final UserService userService;
 
     /**
      * createFacility
@@ -39,45 +40,47 @@ public class FacilityService {
         if (ObjectUtils.isEmpty(facilityRequest)) {
             throw new IllegalArgumentException("Illegal facility object passed");
         }
+        String[] docType = {DocType.NIC.name()};
         Borrower mainBorrower = Borrower.builder()
-                .customerName(facilityRequest.mainBorrower().getCustomerName())
-                .customerNumber(facilityRequest.mainBorrower().getCustomerNumber())
-                .email(facilityRequest.mainBorrower().getEmail())
-                .contactNumber(facilityRequest.mainBorrower().getContactNumber())
-                .address(facilityRequest.mainBorrower().getAddress())
+                .customerName(facilityRequest.mainBorrower().customerName())
+                .customerNumber(facilityRequest.mainBorrower().customerNumber())
+                .email(facilityRequest.mainBorrower().email())
+                .contactNumber(facilityRequest.mainBorrower().contactNumber())
+                .address(facilityRequest.mainBorrower().address())
                 .build();
         List<Borrower> jointBorrowers = new ArrayList<>();
         facilityRequest.jointBorrower().forEach(borrower -> {
             Borrower jointBorrower = Borrower.builder()
-                    .customerName(borrower.getCustomerName())
-                    .customerNumber(borrower.getCustomerNumber())
-                    .email(borrower.getEmail())
-                    .contactNumber(borrower.getContactNumber())
-                    .address(borrower.getAddress())
+                    .customerName(borrower.customerName())
+                    .customerNumber(borrower.customerNumber())
+                    .email(borrower.email())
+                    .contactNumber(borrower.contactNumber())
+                    .address(borrower.address())
                     .build();
             jointBorrowers.add(borrowerService.createBorrower(jointBorrower));
         });
+
         List<Comment> facilityComments = new ArrayList<>();
         facilityRequest.comments().forEach(comment -> {
-            facilityComments.add(commentService.createComment(Comment.builder().body(comment.getBody()).build()));
+            facilityComments.add(commentService.createComment(Comment.builder().body(comment.body()).build()));
         });
-        //File upload service
-        fileService.fileUpload(files);
+
         Facility facility = Facility.builder()
-                .facilityType(facilityRequest.facilityType())
+                .facilityType(FacilityType.valueOf(facilityRequest.facilityType().toUpperCase()))
                 .facilityTerm(facilityRequest.facilityTerm())
                 .ccy(facilityRequest.ccy())
                 .amount(facilityRequest.amount())
-                .catergory(facilityRequest.catergory())
+                .catergory(Catergory.fromId(facilityRequest.category()))
                 .fosReferenceNo(createFacilityReference())
-                .valuationType(facilityRequest.valuationType())
-                .purpose(facilityRequest.purpose())
-                .isHousingLoan(facilityRequest.isHousingLoan())
+                .valuationType(ValuationType.valueOf(facilityRequest.valuationType().toUpperCase()))
+                .purpose(FacilityPurpose.fromValue(facilityRequest.purpose()))
+                .isHousingLoan(facilityRequest.housingLoan())
                 .isFosRef(facilityRequest.isFosRef())
                 .mainBorrower(borrowerService.createBorrower(mainBorrower))
                 .comments(facilityComments)
                 .jointBorrower(jointBorrowers)
-             //   .uploadedFiles(facilityFiles)
+                .uploadedFiles(fileService.fileUpload(files, docType))
+                .user(userService.getUser(facilityRequest.userid()))
                 .build();
         //map request model to facility object, then persist.
         Facility createdFac = facilityRepository.save(facility);

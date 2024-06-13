@@ -49,5 +49,7 @@ public class Facility extends BaseEntity {
     @OneToMany
     @JoinColumn(name = "comment_id")
     private List<Comment> comments;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
 }
